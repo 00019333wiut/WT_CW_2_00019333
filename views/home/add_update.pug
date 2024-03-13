@@ -1,0 +1,71 @@
+include ../head.pug
+body
+  .container.mt-5
+    h1 #{mode}
+    .mb-3
+      label(for="eventName" class="form-label") Event Name
+      input(type="text" class="form-control" id="eventName" name="eventName" required)
+    .mb-3
+      label(for="eventDateTime" class="form-label") Event Date/Time
+      .input-group.date(id="datetimepicker1" data-target-input="nearest")
+        input(type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" id="eventDateTime" name="eventDateTime" required)
+        .input-group-append(data-target="#datetimepicker1" data-toggle="datetimepicker")
+          .input-group-text
+            i.fas.fa-calendar-alt
+    .mb-3
+      label(for="venue" class="form-label") Details
+      input(type="text" class="form-control" id="venue" name="venue" required)
+    .mb-3
+      label(for="seat" class="form-label") Location
+      input(type="text" class="form-control" id="seat" name="seat" required)
+    button(type="submit" class="btn btn-success" onclick="submitForm()") #{mode === 'Update' ? 'Update' : 'Add'}
+    span &nbsp;
+    button(type="submit" class="btn btn-primary" onclick="window.location.href='/'") Back 
+
+  script.
+    const format = 'DD/MM/YYYY HH:mm'
+    const picker = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'),{
+        localization: {
+            'locale': 'fr'
+        }
+    })
+    picker.dates.formatInput = function(date) {
+        return moment(date).format(format)
+    }
+
+    if ("#{mode}" === "Update") {
+      const eventData = !{JSON.stringify(eventData || {})}.ticket;
+      document.getElementById('eventName').value = eventData.eventName || '';
+
+      picker.dates.setValue(
+        new tempusDominus.DateTime(moment(eventData.eventDateTime, format))
+      );
+
+      document.getElementById('venue').value = eventData.venue || '';
+      document.getElementById('status').value = eventData.status || '';
+      document.getElementById('seat').value = eventData.seat || '';
+    }
+
+    function submitForm() {
+      const eventData = {
+        eventName: document.getElementById('eventName').value,
+        eventDateTime: document.getElementById('eventDateTime').value,
+        venue: document.getElementById('venue').value,
+
+        seat: document.getElementById('seat').value,
+      };
+
+      const url = "#{mode}" === "Update" ? `/api/ticket/${!{JSON.stringify(eventData || {})}.id}` : '/api/ticket';
+      const method = "#{mode}" === "Update" ? 'put' : 'post';
+
+      axios[method](url, eventData).then(response => {
+        alert('Success!');
+        location.href = '/'
+      })
+      .catch(error => {
+        if(error.response)
+          alert(JSON.stringify(error.response.data.errors))
+        else
+          alert(error)
+      });
+    }
