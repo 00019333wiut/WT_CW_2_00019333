@@ -45,9 +45,6 @@ const updateTicketValidation = () => {
         .withMessage('Invalid date and time format. Please use "DD/MM/YYYY HH:mm" format.'),
     body('venue')
       .notEmpty().withMessage('Event venue must not be empty'),
-    body('contactPhone')
-      .notEmpty().withMessage('Contact phone must not be empty')
-      .matches(/^\+998\d{9}$/).withMessage('Invalid phone number format, it must be +998xxxxxxxxx'),
     body('seat')
       .notEmpty().withMessage('Seat must not be empty'),      
   ];
