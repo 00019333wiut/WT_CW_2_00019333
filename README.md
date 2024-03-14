@@ -38,3 +38,6 @@ nodemon: A utility that automatically restarts the application when changes are 
 pug: The templating engine used to generate HTML pages.
 
 By running npm install in the project directory, you may install these dependencies.
+
+GitHub repository: https://github.com/00019333wiut/WT_CW_2_00019333.git
+Amazon: 
